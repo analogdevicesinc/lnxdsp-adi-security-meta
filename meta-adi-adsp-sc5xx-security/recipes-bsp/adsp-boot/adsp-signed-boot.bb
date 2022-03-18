@@ -45,10 +45,12 @@ do_compile() {
 	cp ${DEPLOY_DIR_IMAGE}/stage2-boot-unsigned.ldr ${B}/
 
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
+		-attribute 0x80000002=${LDR_BCODE} \
 		-infile stage1-boot-unsigned.ldr -outfile stage1-boot.ldr \
 		-prikey ${ADI_SIGNTOOL_KEY}
 
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
+		-attribute 0x80000002=${LDR_BCODE} \
 		-infile stage2-boot-unsigned.ldr -outfile stage2-boot.ldr \
 		-prikey ${ADI_SIGNTOOL_KEY}
 }
