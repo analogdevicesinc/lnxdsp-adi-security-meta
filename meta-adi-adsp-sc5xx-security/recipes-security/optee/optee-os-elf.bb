@@ -12,7 +12,7 @@ SRC_URI = " \
 
 inherit deploy deploy-dep
 
-addtask deploy after do_compile before do_install
+addtask deploy after do_compile before do_build
 
 do_compile() {
 	${OBJCOPY} -I binary ${WORKDIR}/tee.bin -O elf64-littleaarch64 ${B}/tee.o
@@ -22,17 +22,9 @@ do_compile() {
 	${CC} -nostartfiles -nostdlib -static -T ${WORKDIR}/optee-elf.ld ${B}/tee.o -o ${B}/tee.elf
 }
 
-do_install() {
-	install -d ${D}/firmware
-	install -m 0755 ${B}/tee.elf ${D}/firmware/tee.elf
-}
+do_install[noexec] = "1"
 
 do_deploy() {
 	install -d ${DEPLOYDIR}
 	install -m 0755 ${B}/tee.elf ${DEPLOYDIR}/tee.elf
 }
-
-FILES_${PN} = "\
-	/firmware \
-	/firmware/tee.elf \
-"

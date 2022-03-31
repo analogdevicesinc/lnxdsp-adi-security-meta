@@ -18,11 +18,6 @@ SIGNTOOL_PROC_adsp-sc598-som-ezkit = "ADSP-SC598"
 
 SIGNTOOL_ALGO = "ecdsa256"
 
-FILES_${PN} = "\
-	stage1-boot.ldr \
-	stage2-boot.ldr \
-"
-
 DEPLOY_SRC_URI = "stage1-boot-unsigned.ldr stage2-boot-unsigned.ldr"
 
 do_configure() {
@@ -53,9 +48,10 @@ do_compile() {
 		-prikey ${ADI_SIGNTOOL_KEY}
 }
 
+FILES_${PN} = "adsp-signed-boot.dummy"
+
 do_install() {
-	install -m 0755 ${WORKDIR}/stage1-boot.ldr ${D}/
-	install -m 0755 ${WORKDIR}/stage2-boot.ldr ${D}/
+	touch ${D}/adsp-signed-boot.dummy
 }
 
 do_deploy() {
@@ -63,4 +59,4 @@ do_deploy() {
 	install -m 0755 ${WORKDIR}/stage2-boot.ldr ${DEPLOYDIR}/
 }
 
-addtask do_deploy after do_compile before do_install
+addtask do_deploy after do_compile before do_build

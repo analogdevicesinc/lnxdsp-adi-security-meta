@@ -42,10 +42,6 @@ do_compile() {
 }
 
 do_install() {
-    #install core in firmware
-    install -d ${D}${nonarch_base_libdir}/firmware/
-    install -m 0755 ${B}/out/arm-plat-adi/core/tee.bin ${D}${nonarch_base_libdir}/firmware/
-
     #install TA devkit
     install -d ${D}${includedir}/optee/export-user_ta/
     for f in ${B}/out/arm-plat-adi/export-ta_arm64/* ; do
@@ -57,12 +53,11 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_deploy() {
     install -d ${DEPLOYDIR}
-    install -m 0755 ${D}${nonarch_base_libdir}/firmware/tee.bin ${DEPLOYDIR}/
+    install -m 0755 ${B}/out/arm-plat-adi/core/tee.bin ${DEPLOYDIR}/
 }
 
 addtask deploy after do_install before do_build
 
-FILES_${PN} = "${nonarch_base_libdir}/firmware/"
 FILES_${PN}-dev = "${includedir}/optee/"
 
 INSANE_SKIP_${PN}-dev = "staticdev"
