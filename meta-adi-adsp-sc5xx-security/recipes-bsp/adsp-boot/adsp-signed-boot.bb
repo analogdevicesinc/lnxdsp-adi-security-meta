@@ -2,9 +2,9 @@ DESCRIPTION = "Generate signed boot files for ADSP platforms"
 LICENSE = "CLOSED"
 # todo license files
 
-inherit deploy
+inherit deploy deploy-dep
 
-DEPENDS = "u-boot-adi adsp-boot"
+DDEPENDS = "u-boot-adi adsp-boot"
 
 # overwrite with another signature type in local.conf if you prefer
 # valid options are:
@@ -23,6 +23,8 @@ FILES_${PN} = "\
 	stage2-boot.ldr \
 "
 
+DEPLOY_SRC_URI = "stage1-boot-unsigned.ldr stage2-boot-unsigned.ldr"
+
 do_configure() {
 	if [ -z "${ADI_SIGNTOOL_KEY}" ]; then
 		bbfatal "Signing key not specified, please set ADI_SIGNTOOL_KEY in local.conf"
@@ -38,11 +40,7 @@ do_configure() {
 }
 
 do_compile() {
-	# todo when absolute pathes are supported, no need to copy files
-	cd ${B}
-
-	cp ${DEPLOY_DIR_IMAGE}/stage1-boot-unsigned.ldr ${B}/
-	cp ${DEPLOY_DIR_IMAGE}/stage2-boot-unsigned.ldr ${B}/
+	cd ${WORKDIR}
 
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
 		-attribute 0x80000002=${LDR_BCODE} \
@@ -56,13 +54,13 @@ do_compile() {
 }
 
 do_install() {
-	install -m 0755 ${B}/stage1-boot.ldr ${D}/
-	install -m 0755 ${B}/stage2-boot.ldr ${D}/
+	install -m 0755 ${WORKDIR}/stage1-boot.ldr ${D}/
+	install -m 0755 ${WORKDIR}/stage2-boot.ldr ${D}/
 }
 
 do_deploy() {
-	install -m 0755 ${B}/stage1-boot.ldr ${DEPLOYDIR}/
-	install -m 0755 ${B}/stage2-boot.ldr ${DEPLOYDIR}/
+	install -m 0755 ${WORKDIR}/stage1-boot.ldr ${DEPLOYDIR}/
+	install -m 0755 ${WORKDIR}/stage2-boot.ldr ${DEPLOYDIR}/
 }
 
-addtask do_deploy after do_install before do_build
+addtask do_deploy after do_compile before do_install

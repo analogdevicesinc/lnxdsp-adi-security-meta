@@ -17,3 +17,4 @@ S = "${WORKDIR}/git"
 
 TFA_PLATFORM = "adsp_sc598"
 TFA_BUILD_TARGET = "bl31"
+TFA_SPD = "opteed"

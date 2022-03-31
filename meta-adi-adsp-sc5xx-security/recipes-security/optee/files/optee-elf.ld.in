@@ -1,0 +1,17 @@
+OUTPUT_FORMAT("elf64-littleaarch64")
+OUTPUT_ARCH(aarch64)
+ENTRY(_start)
+MEMORY {
+	RAM (rwx): ORIGIN = LOAD_ADDRESS, LENGTH = 0x0010001c
+}
+SECTIONS
+{
+	. = LOAD_ADDRESS;
+	_start = .;
+	.text . : {
+		*tee.o(.data*)
+	} >RAM
+	/DISCARD/ : {
+		*(.dynsym .dynamic .interp .note.gnu.build-id)
+	}
+}
