@@ -19,7 +19,10 @@ OPTEE_OS_GIT_PROTOCOL ?= "ssh"
 OPTEE_OS_CORE_LOG_LEVEL ?= "1"
 OPTEE_OS_ENABLE_TESTS ?= "n"
 
-SRC_URI = "${OPTEE_OS_GIT_URI};branch=develop/sc598;protocol=${OPTEE_OS_GIT_PROTOCOL}"
+SRC_URI = " \
+	${OPTEE_OS_GIT_URI};branch=develop/sc598;protocol=${OPTEE_OS_GIT_PROTOCOL} \
+	file://libotp.a \
+"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
@@ -35,6 +38,10 @@ EXTRA_OEMAKE = " \
 	CFG_ENABLE_EMBEDDED_TESTS=${OPTEE_OS_ENABLE_TESTS} \
 	LDFLAGS= \
 "
+
+do_configure() {
+	cp ${WORKDIR}/libotp.a ${S}/libotp.a
+}
 
 do_compile() {
 	export CFLAGS="${CFLAGS} --sysroot=${STAGING_DIR_HOST}"
