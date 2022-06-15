@@ -27,8 +27,11 @@ SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
+OPTEEMACHINE ?= "${MACHINE}"
+OPTEEOUTPUTMACHINE ?= "${MACHINE}"
+
 EXTRA_OEMAKE = " \
-    PLATFORM=adi \
+    PLATFORM=${OPTEEMACHINE} \
 	ARM=arm \
 	CROSS_COMPILE=${HOST_PREFIX} \
     CROSS_COMPILE_core=${HOST_PREFIX} \
@@ -51,7 +54,7 @@ do_compile() {
 do_install() {
     #install TA devkit
     install -d ${D}${includedir}/optee/export-user_ta/
-    for f in ${B}/out/arm-plat-adi/export-ta_arm64/* ; do
+    for f in ${B}/out/arm-plat-${OPTEEOUTPUTMACHINE}/export-ta_arm64/* ; do
         cp -aR $f ${D}${includedir}/optee/export-user_ta/
     done
 }
@@ -60,7 +63,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_deploy() {
     install -d ${DEPLOYDIR}
-    install -m 0755 ${B}/out/arm-plat-adi/core/tee.bin ${DEPLOYDIR}/
+    install -m 0755 ${B}/out/arm-plat-${OPTEEOUTPUTMACHINE}/core/tee.bin ${DEPLOYDIR}/
 }
 
 addtask deploy after do_install before do_build
