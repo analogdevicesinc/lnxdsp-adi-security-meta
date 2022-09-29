@@ -18,7 +18,7 @@ SIGNTOOL_PROC_adsp-sc598-som-ezkit = "ADSP-SC598"
 
 SIGNTOOL_ALGO = "ecdsa256"
 
-DEPLOY_SRC_URI = "stage1-boot-unsigned.ldr stage2-boot-unsigned.ldr"
+UNSIGNED_SRC = "stage1-boot-unsigned.ldr stage2-boot-unsigned.ldr"
 
 do_configure() {
 	if [ -z "${ADI_SIGNTOOL_KEY}" ]; then
@@ -36,6 +36,11 @@ do_configure() {
 
 do_compile() {
 	cd ${WORKDIR}
+
+	for f in ${UNSIGNED_SRC}
+	do
+		cp ${DEPLOY_DIR_IMAGE}/$f ${WORKDIR}/$f
+	done
 
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
 		-attribute 0x80000002=${LDR_BCODE} \
