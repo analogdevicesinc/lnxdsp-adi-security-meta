@@ -6,6 +6,6 @@ EXTRA_OEMAKE += "V=1 \
                  OPTEE_CLIENT_EXPORT=${STAGING_DIR_HOST}${prefix} \
                  CROSS_COMPILE_HOST=${HOST_PREFIX} \
                  CROSS_COMPILE_TA=${HOST_PREFIX} \
-                 CROSS_COMPILE_ta_arm64=${HOST_PREFIX} \
+                 CROSS_COMPILE_ta:arm64=${HOST_PREFIX} \
                  TEEC_EXPORT=${STAGING_DIR_HOST}${prefix} \
                 "

@@ -29,12 +29,12 @@ do_install() {
 	install -m 0755 ${S}/include/adi_otp_pta.h ${D}/usr/include/adi_otp_pta.h
 }
 
-FILES_${PN} = " \
+FILES:${PN} = " \
 	/usr/bin/adiotp-cli \
 	/usr/lib/libadiotp.so.2.0 \
 	/usr/lib/libadiotp.so \
 "
-FILES_${PN}-dev += " \
+FILES:${PN}-dev += " \
 	/usr/include/libadiotp.h \
 	/usr/include/adi_otp_pta.h \
 "

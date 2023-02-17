@@ -1,5 +1,5 @@
 
-DEPENDS_append_adsp-sc5xx-signedboot = " u-boot-mkimage-native dtc-native"
+DEPENDS:append_adsp-sc5xx-signedboot = " u-boot-mkimage-native dtc-native"
 
 STAGE_1_TARGET_NAME_adsp-sc5xx-signedboot = "stage1-boot-unsigned.ldr"
 
@@ -47,7 +47,7 @@ sits_emit() {
 EOF
 }
 
-do_configure_prepend_adsp-sc5xx-signedboot() {
+do_configure:prepend_adsp-sc5xx-signedboot() {
 	if [ ! -d "${UBOOT_SIGN_KEYDIR}" ]; then
 		bbfatal "Missing or invalid UBOOT_SIGN_KEYDIR (= '${UBOOT_SIGN_KEYDIR}')"
 	fi
@@ -60,7 +60,7 @@ do_configure_prepend_adsp-sc5xx-signedboot() {
 }
 
 # Add/Inject FIT public key into U-Boot DTS prior to U-Boot compilation
-do_compile_prepend_adsp-sc5xx-signedboot(){
+do_compile:prepend_adsp-sc5xx-signedboot(){
 	sits_emit
 
 	DTS_NAME=$(cat ${S}/configs/${UBOOT_MACHINE} | grep DEVICE_TREE | sed -e 's/.*="//g' -e 's/"//g')

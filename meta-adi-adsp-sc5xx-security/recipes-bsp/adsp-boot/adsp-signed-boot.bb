@@ -53,7 +53,7 @@ do_compile() {
 		-prikey ${ADI_SIGNTOOL_KEY}
 }
 
-FILES_${PN} = "adsp-signed-boot.dummy"
+FILES:${PN} = "adsp-signed-boot.dummy"
 
 do_install() {
 	touch ${D}/adsp-signed-boot.dummy

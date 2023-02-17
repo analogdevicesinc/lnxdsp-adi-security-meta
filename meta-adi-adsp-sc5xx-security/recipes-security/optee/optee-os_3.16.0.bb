@@ -35,7 +35,7 @@ EXTRA_OEMAKE = " \
 	ARM=arm \
 	CROSS_COMPILE=${HOST_PREFIX} \
     CROSS_COMPILE_core=${HOST_PREFIX} \
-    CROSS_COMPILE_ta_arm64=${HOST_PREFIX} \
+    CROSS_COMPILE_ta:arm64=${HOST_PREFIX} \
 	CFG_TEE_CORE_LOG_LEVEL=${OPTEE_OS_CORE_LOG_LEVEL} \
 	CFG_TEE_TA_LOG_LEVEL=${OPTEE_OS_CORE_LOG_LEVEL} \
 	CFG_ENABLE_EMBEDDED_TESTS=${OPTEE_OS_ENABLE_TESTS} \
@@ -54,7 +54,7 @@ do_compile() {
 do_install() {
     #install TA devkit
     install -d ${D}${includedir}/optee/export-user_ta/
-    for f in ${B}/out/arm-plat-${OPTEEOUTPUTMACHINE}/export-ta_arm64/* ; do
+    for f in ${B}/out/arm-plat-${OPTEEOUTPUTMACHINE}/export-ta:arm64/* ; do
         cp -aR $f ${D}${includedir}/optee/export-user_ta/
     done
 }
@@ -68,8 +68,8 @@ do_deploy() {
 
 addtask deploy after do_install before do_build
 
-FILES_${PN}-dev = "${includedir}/optee/"
+FILES:${PN}-dev = "${includedir}/optee/"
 
-INSANE_SKIP_${PN}-dev = "staticdev"
+INSANE_SKIP:${PN}-dev = "staticdev"
 
 INHIBIT_PACKAGE_STRIP = "1"

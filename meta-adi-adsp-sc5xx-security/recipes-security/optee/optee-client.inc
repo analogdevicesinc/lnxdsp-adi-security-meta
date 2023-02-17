@@ -18,8 +18,8 @@ EXTRA_OECMAKE = " \
     -DBUILD_SHARED_LIBS=ON \
 "
 
-do_install_append() {
+do_install:append() {
     install -D -p -m0644 ${WORKDIR}/tee-supplicant.service ${D}${systemd_system_unitdir}/tee-supplicant.service
 }
 
-SYSTEMD_SERVICE_${PN} = "tee-supplicant.service"
+SYSTEMD_SERVICE:${PN} = "tee-supplicant.service"
