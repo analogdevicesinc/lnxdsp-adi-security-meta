@@ -13,6 +13,8 @@ SRCREV_FORMAT = "tfa"
 
 SRCREV_tfa = "${AUTOREV}"
 
+LIC_FILES_CHKSUM += "file://docs/license.rst;md5=b2c740efedc159745b9b31f88ff03dde"
+
 S = "${WORKDIR}/git"
 
 TFA_PLATFORM = "adsp_sc598"
