@@ -25,6 +25,7 @@ do_compile() {
     cd ${S}
     # Top level makefile doesn't seem to handle parallel make gracefully
 	export CFLAGS="${CFLAGS} --sysroot=${STAGING_DIR_HOST}"
+	kludge_openssl
     oe_runmake xtest
     oe_runmake ta
     oe_runmake test_plugin

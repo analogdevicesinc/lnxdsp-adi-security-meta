@@ -1,7 +1,7 @@
 
-DEPENDS:append_adsp-sc5xx-signedboot = " u-boot-mkimage-native dtc-native"
+DEPENDS:append:adsp-sc5xx-signedboot = " u-boot-mkimage-native dtc-native"
 
-STAGE_1_TARGET_NAME_adsp-sc5xx-signedboot = "stage1-boot-unsigned.ldr"
+STAGE_1_TARGET_NAME:adsp-sc5xx-signedboot = "stage1-boot-unsigned.ldr"
 
 # Actual contents of this don't matter, we just need to sign this fit image in order to get uboot
 # to update the dtb with the key that was used for signing, which will be used to sign the kernel
@@ -14,7 +14,7 @@ sits_emit() {
 	description = "U-Boot Simple fitImage";
 	#address-cells = <1>;
 	images {
-		dummy@1 {
+		dummy-img {
 			description = "dummy";
 			data = [00];
 			type = "kernel";
@@ -23,20 +23,20 @@ sits_emit() {
 			compression = "none";
 			load = <0x80008000>;
 			entry = <0x80008000>;
-			hash@1 {
+			hash {
 				algo = "sha1";
 			};
 		};
 	};
 	configurations {
-		default = "conf@1";
-		conf@1 {
+		default = "conf-1";
+		conf-1 {
 			description = "dummy";
-			dummy = "dummy@1";
-			hash@1 {
+			dummy = "dummy-img";
+			hash {
 					algo = "sha1";
 			};
-			signature@1 {
+			signature {
 				algo = "sha1,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
 				sign-images = "dummy";
@@ -47,7 +47,7 @@ sits_emit() {
 EOF
 }
 
-do_configure:prepend_adsp-sc5xx-signedboot() {
+do_configure:prepend:adsp-sc5xx-signedboot() {
 	if [ ! -d "${UBOOT_SIGN_KEYDIR}" ]; then
 		bbfatal "Missing or invalid UBOOT_SIGN_KEYDIR (= '${UBOOT_SIGN_KEYDIR}')"
 	fi
@@ -60,7 +60,7 @@ do_configure:prepend_adsp-sc5xx-signedboot() {
 }
 
 # Add/Inject FIT public key into U-Boot DTS prior to U-Boot compilation
-do_compile:prepend_adsp-sc5xx-signedboot(){
+do_compile:prepend:adsp-sc5xx-signedboot(){
 	sits_emit
 
 	DTS_NAME=$(cat ${S}/configs/${UBOOT_MACHINE} | grep DEVICE_TREE | sed -e 's/.*="//g' -e 's/"//g')

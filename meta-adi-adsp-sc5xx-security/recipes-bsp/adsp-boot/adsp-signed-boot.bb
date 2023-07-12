@@ -14,7 +14,7 @@ DDEPENDS = "u-boot-adi adsp-boot"
 ADI_SIGNATURE_TYPE ?= "BLp"
 
 SIGNTOOL_PROC = "ADSP-SC594"
-SIGNTOOL_PROC_adsp-sc598-som-ezkit = "ADSP-SC598"
+SIGNTOOL_PROC:adsp-sc598-som-ezkit = "ADSP-SC598"
 
 SIGNTOOL_ALGO = "ecdsa256"
 

@@ -1,0 +1,1 @@
+inherit adsp-signed-fit

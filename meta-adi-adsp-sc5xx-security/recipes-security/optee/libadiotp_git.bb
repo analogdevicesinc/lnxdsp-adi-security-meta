@@ -13,6 +13,7 @@ S = "${WORKDIR}/git"
 include optee.inc
 
 do_compile() {
+	kludge_openssl
 	oe_runmake
 }
 
