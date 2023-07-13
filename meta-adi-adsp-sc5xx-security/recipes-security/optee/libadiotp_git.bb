@@ -22,7 +22,7 @@ do_install() {
 	install -d ${D}/usr/lib
 
 	install -m 0755 ${S}/libadiotp.so ${D}/usr/lib/libadiotp.so.2.0
-	ln -s libadiotp.so.2.0 ${D}/usr/lib/libadiotp.so
+	ln -sf libadiotp.so.2.0 ${D}/usr/lib/libadiotp.so.2
 	install -m 0755 ${S}/adiotp-cli ${D}/usr/bin/adiotp-cli
 
 	install -d ${D}/usr/include
@@ -33,7 +33,7 @@ do_install() {
 FILES:${PN} = " \
 	/usr/bin/adiotp-cli \
 	/usr/lib/libadiotp.so.2.0 \
-	/usr/lib/libadiotp.so \
+	/usr/lib/libadiotp.so.2 \
 "
 FILES:${PN}-dev += " \
 	/usr/include/libadiotp.h \
