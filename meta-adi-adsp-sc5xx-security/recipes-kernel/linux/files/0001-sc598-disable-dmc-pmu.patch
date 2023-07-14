@@ -1,0 +1,29 @@
+From b7a96a935c853dbc617875004a09e30c56735cd6 Mon Sep 17 00:00:00 2001
+From: Greg Malysa <greg.malysa@timesys.com>
+Date: Fri, 14 Jul 2023 03:12:51 -0400
+Subject: [PATCH] sc598: disable dmc pmu
+
+---
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+index 86f7c82c24a1..1709e7dc89f8 100644
+--- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
++++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+@@ -234,12 +234,6 @@ pads_system_config: adi-control@31004600 {
+ 			status = "okay";
+ 		};
+ 
+-		dmc_pmu: dmc-pmu@31070000 {
+-			compatible = "adi,dmc-pmu";
+-			reg = <0x31070000 0x200>;
+-			status = "okay";
+-		};
+-
+ 		sram-controller@31080000 {
+ 			compatible = "adi,sram-controller";
+ 			reg = <0x31080000 0x100>;
+-- 
+2.38.2
+
