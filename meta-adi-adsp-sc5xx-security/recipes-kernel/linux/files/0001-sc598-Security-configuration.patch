@@ -1,0 +1,175 @@
+From 8610b026a7db6dedeaa63c594618fe33774fa3ad Mon Sep 17 00:00:00 2001
+From: Greg Malysa <greg.malysa@timesys.com>
+Date: Thu, 3 Aug 2023 15:48:18 -0400
+Subject: [PATCH] sc598: Security configuration
+
+Disable peripherals restricted by the SPU:
+- Crypto accelerators
+- SEC, RCU reboot
+- remoteproc because it uses the RCU and accesses L2 directly
+- DMC PMU
+- TRNG
+
+Enable:
+- OPTEE support
+- ARM PSCI support to reboot with TFA
+- ADI_RPMSG as a module to communicate after loading SHARCs
+---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 -------
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 17 +++++++++++------
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi        | 12 ++++++++----
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  4 +++-
+ 4 files changed, 22 insertions(+), 18 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index 96287238f741..0893f0615cd7 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -305,13 +305,6 @@ route {
+ 	};
+ };
+ 
+-&pkte1 {
+-	status = "okay";
+-	mode = "arm";        /* autonomous ring mode */
+-	/* mode = "tcm"; */  /* target command mode  */
+-	/* mode = "dhm"; */  /* direct host mode     */
+-};
+-
+ &crc0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index 92749e6cf9eb..05158962de58 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -78,7 +78,7 @@ sharc0: core1-rproc@0x28240000 {
+ 			adi,verify = <1>;
+ 			adi,tru = <&tru>;
+ 			adi,tru-master-id = <135>; /* trigger master SOFT4 */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc1: core2-rproc@0x28a40000 {
+@@ -96,15 +96,14 @@ sharc1: core2-rproc@0x28a40000 {
+ 			adi,verify = <1>;
+ 			adi,tru = <&tru>;
+ 			adi,tru-master-id = <136>; /* trigger master SOFT5 */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc0_rpmsg: core0-rpmsg@0x28240000 {
+-				status = "disabled";
++				status = "okay";
+ 				compatible = "adi,rpmsg-SC598";
+ 				core-id = <1>;
+ 				adi,rcu = <&rcu>;
+-				adi,check-idle;
+ 				adi,rsc-table = <&rsc_tbl0>;
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,tru = <&tru>;
+@@ -114,11 +113,10 @@ sharc0_rpmsg: core0-rpmsg@0x28240000 {
+ 		};
+ 
+ 		sharc1_rpmsg: core1-rpmsg@0x28a40000 {
+-				status = "disabled";
++				status = "okay";
+ 				compatible = "adi,rpmsg-SC598";
+ 				core-id = <2>;
+ 				adi,rcu = <&rcu>;
+-				adi,check-idle;
+ 				adi,rsc-table = <&rsc_tbl1>;
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,tru = <&tru>;
+@@ -128,6 +126,13 @@ sharc1_rpmsg: core1-rpmsg@0x28a40000 {
+ 		};
+ 	};
+ 
++	firmware {
++		optee {
++			compatible = "linaro,optee-tz";
++			method = "smc";
++		};
++	};
++
+ };
+ 
+ &tru {
+diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+index fd1eed8ad602..06a1352cf165 100644
+--- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
++++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+@@ -69,6 +69,11 @@ pmu {
+ 		interrupt-parent = <&gic>;
+ 	};
+ 
++	psci {
++		compatible = "arm,psci-1.0";
++		method = "smc";
++	};
++
+ 	gic: interrupt-controller@31200000 {
+ 		compatible = "arm,gic-v3";
+ 		#interrupt-cells = <3>;
+@@ -216,7 +221,7 @@ pads_system_config: adi-control@31004600 {
+ 		dmc_pmu: dmc-pmu@31070000 {
+ 			compatible = "adi,dmc-pmu";
+ 			reg = <0x31070000 0x200>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sram-controller@31080000 {
+@@ -237,7 +242,6 @@ rcu: rcu@0x3108c000 {
+ 			reg = <0x3108c000 0x1000>;
+ 			adi,sharc-min = <1>;
+ 			adi,sharc-max = <2>;
+-			adi,enable-reboot;
+ 			status = "okay";
+ 		};
+ 
+@@ -246,7 +250,7 @@ sec: sec@0x31089000 {
+ 			reg = <0x31089000 0x1000>;
+ 			adi,rcu = <&rcu>;
+ 			adi,sharc-cores = <2>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		tru: tru@0x3108a000 {
+@@ -1308,7 +1312,7 @@ trng: rng@0x310D0000 {
+ 			alarm-thresh  = <0xff>;
+ 			shdn-thresh = <0x04>;
+ 			poll-data = <0>; /* Use IRQ for data */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 	};
+diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+index 567c85cde9f0..49f40dadcbcf 100644
+--- a/arch/arm64/configs/sc598-som-ezkit_defconfig
++++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+@@ -295,7 +295,7 @@ CONFIG_REMOTEPROC=y
+ CONFIG_ADI_REMOTEPROC=y
+ CONFIG_RPMSG_CHAR=y
+ CONFIG_RPMSG_QCOM_GLINK_RPM=y
+-CONFIG_RPMSG_VIRTIO=y
++CONFIG_RPMSG_ADI=m
+ CONFIG_PM_DEVFREQ=y
+ CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
+ CONFIG_IIO=y
+@@ -304,6 +304,8 @@ CONFIG_ADI_ADSP_IRQ=y
+ CONFIG_PHY_XGENE=y
+ CONFIG_PHY_QCOM_USB_HS=y
+ CONFIG_HISI_PMU=y
++CONFIG_TEE=y
++CONFIG_OPTEE=y
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
+-- 
+2.38.2
+

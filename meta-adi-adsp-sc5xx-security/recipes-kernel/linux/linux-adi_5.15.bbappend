@@ -1,8 +1,5 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI:append:adsp-sc5xx-optee = " \
-	file://0001-enable-optee-configuration.patch \
-	file://0001-sc598-disable-dmc-pmu.patch \
-	file://0001-sc598-disable-trng.patch \
-	file://0001-sc598-disable-crypto-pkte.patch \
+	file://0001-sc598-Security-configuration.patch \
 "
