@@ -19,7 +19,7 @@ do_compile() {
 
 	sed -e "s/LOAD_ADDRESS/${OPTEE_LOAD_ADDRESS}/" ${WORKDIR}/optee-elf.ld.in > ${WORKDIR}/optee-elf.ld
 
-	${CC} -nostartfiles -nostdlib -static -T ${WORKDIR}/optee-elf.ld ${B}/tee.o -o ${B}/tee.elf
+	${CC} -nostartfiles -nostdlib -static -T ${WORKDIR}/optee-elf.ld ${B}/tee.o -o ${B}/tee.elf -Wl,--nmagic
 }
 
 do_install[noexec] = "1"
