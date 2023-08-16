@@ -18,8 +18,14 @@ EXTRA_OECMAKE = " \
     -DBUILD_SHARED_LIBS=ON \
 "
 
+do_compile:append() {
+    sed -e's,@sbindir@,${sbindir},g' \
+        -e's,@sysconfdir@,${sysconfdir},g' \
+        ${WORKDIR}/tee-supplicant.service >${B}/tee-supplicant.service
+}
+
 do_install:append() {
-    install -D -p -m0644 ${WORKDIR}/tee-supplicant.service ${D}${systemd_system_unitdir}/tee-supplicant.service
+    install -D -p -m0644 ${B}/tee-supplicant.service ${D}${systemd_system_unitdir}/tee-supplicant.service
 }
 
 SYSTEMD_SERVICE:${PN} = "tee-supplicant.service"
