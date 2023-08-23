@@ -9,6 +9,7 @@ SRC_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
+B = "${S}"
 
 include optee.inc
 
@@ -18,26 +19,16 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/usr/bin
-	install -d ${D}/usr/lib
+	install -d ${D}${libdir}
+	install -m 0755 ${B}/libadiotp.so ${D}${libdir}/libadiotp.so.2.0
+	ln -sf libadiotp.so.2.0 ${D}${libdir}/libadiotp.so.2
 
-	install -m 0755 ${S}/libadiotp.so ${D}/usr/lib/libadiotp.so.2.0
-	ln -sf libadiotp.so.2.0 ${D}/usr/lib/libadiotp.so.2
-	install -m 0755 ${S}/adiotp-cli ${D}/usr/bin/adiotp-cli
+	install -d ${D}${bindir}
+	install -m 0755 ${B}/adiotp-cli ${D}${bindir}/
 
-	install -d ${D}/usr/include
-	install -m 0755 ${S}/include/libadiotp.h ${D}/usr/include/libadiotp.h
-	install -m 0755 ${S}/include/adi_otp_pta.h ${D}/usr/include/adi_otp_pta.h
+	install -d ${D}${includedir}
+	install -m 0755 ${B}/include/libadiotp.h ${D}${includedir}/
+	install -m 0755 ${B}/include/adi_otp_pta.h ${D}${includedir}/
 }
-
-FILES:${PN} = " \
-	/usr/bin/adiotp-cli \
-	/usr/lib/libadiotp.so.2.0 \
-	/usr/lib/libadiotp.so.2 \
-"
-FILES:${PN}-dev += " \
-	/usr/include/libadiotp.h \
-	/usr/include/adi_otp_pta.h \
-"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
