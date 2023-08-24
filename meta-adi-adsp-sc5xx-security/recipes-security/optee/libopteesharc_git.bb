@@ -8,6 +8,7 @@ SRC_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
+B = "${S}"
 
 include optee.inc
 
@@ -17,26 +18,16 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/usr/bin
-	install -d ${D}/usr/lib
+	install -d ${D}${libdir}
+	install -m 0755 ${B}/libopteesharc.so ${D}${libdir}/libopteesharc.so.1.0
+	ln -sf libopteesharc.so.1.0 ${D}${libdir}/libopteesharc.so.1
 
-	install -m 0755 ${S}/libopteesharc.so ${D}/usr/lib/libopteesharc.so.1.0
-	ln -sf libopteesharc.so.1.0 ${D}/usr/lib/libopteesharc.so.1
-	install -m 0755 ${S}/sharc-cli ${D}/usr/bin/sharc-cli
+	install -d ${D}${bindir}
+	install -m 0755 ${B}/sharc-cli ${D}${bindir}/
 
-	install -d ${D}/usr/include
-	install -m 0755 ${S}/include/libopteesharc.h ${D}/usr/include/libopteesharc.h
-	install -m 0755 ${S}/include/adi_sharc_pta.h ${D}/usr/include/adi_sharc_pta.h
+	install -d ${D}${includedir}
+	install -m 0755 ${B}/include/libopteesharc.h ${D}${includedir}/libopteesharc.h
+	install -m 0755 ${B}/include/adi_sharc_pta.h ${D}${includedir}/adi_sharc_pta.h
 }
-
-FILES:${PN} = " \
-	/usr/bin/sharc-cli \
-	/usr/lib/libopteesharc.so.1.0 \
-	/usr/lib/libopteesharc.so.1 \
-"
-FILES:${PN}-dev += " \
-	/usr/include/libopteesharc.h \
-	/usr/include/adi_sharc_pta.h \
-"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
