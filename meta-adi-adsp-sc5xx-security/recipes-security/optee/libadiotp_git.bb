@@ -1,7 +1,7 @@
-# TODO: Update license
 SUMMARY = "ADI OTP Interface Library"
 DESCRIPTION = "Library and CLI for interacting with OTP memory via OP-TEE"
-LICENSE = "CLOSED"
+LICENSE = "BSD-3-Clause"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=83a4fa88496792b47ea6cfdc3456dcaf"
 
 DEPENDS = "optee-client"
 

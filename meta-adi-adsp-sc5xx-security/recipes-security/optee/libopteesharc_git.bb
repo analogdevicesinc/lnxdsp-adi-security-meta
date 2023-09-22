@@ -1,7 +1,7 @@
-# TODO: Update license
 SUMMARY = "ADI SHARC control via OP-TEE"
 DESCRIPTION = "Library and CLI for controlling on-chip SHARCs through OP-TEE"
-LICENSE = "CLOSED"
+LICENSE = "BSD-3-Clause"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=83a4fa88496792b47ea6cfdc3456dcaf"
 
 DEPENDS = "optee-client"
 SRC_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/libopteesharc.git;branch=master;protocol=ssh"
