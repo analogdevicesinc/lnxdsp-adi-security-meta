@@ -13,11 +13,12 @@ DEPENDS = "python3-cryptography-native python3-pycryptodome-native python3-pycry
 
 OPTEE_OS_GIT_URI ?= "git://github.com/analogdevicesinc/optee_os.git"
 OPTEE_OS_GIT_PROTOCOL ?= "https"
+OPTEE_OS_GIT_BRANCH ?= "develop/yocto-3.1.0"
 OPTEE_OS_CORE_LOG_LEVEL ?= "1"
 OPTEE_OS_ENABLE_TESTS ?= "n"
 
 SRC_URI = " \
-	${OPTEE_OS_GIT_URI};branch=develop/yocto-3.1.0;protocol=${OPTEE_OS_GIT_PROTOCOL} \
+	${OPTEE_OS_GIT_URI};branch=${OPTEE_OS_GIT_BRANCH};protocol=${OPTEE_OS_GIT_PROTOCOL} \
 	file://libotp.a \
 "
 SRCREV = "5565ab2f814941f2870acaf2a2410d819225550b"
