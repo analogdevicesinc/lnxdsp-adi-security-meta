@@ -4,8 +4,8 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=83a4fa88496792b47ea6cfdc3456dcaf"
 
 DEPENDS = "optee-client"
-SRC_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/libopteesharc.git;branch=master;protocol=ssh"
-SRCREV = "${AUTOREV}"
+SRC_URI = "git://github.com/analogdevicesinc/libopteesharc.git;branch=master;protocol=https"
+SRCREV = "c37665e4a16c53c4517ef15e64f9405619bd6879"
 
 S = "${WORKDIR}/git"
 B = "${S}"
