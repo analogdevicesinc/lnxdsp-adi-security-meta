@@ -5,8 +5,8 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=83a4fa88496792b47ea6cfdc3456dcaf"
 
 DEPENDS = "optee-client"
 
-SRC_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/libadiotp.git;branch=master;protocol=ssh"
-SRCREV = "${AUTOREV}"
+SRC_URI = "git://github.com/analogdevicesinc/libadiotp.git;branch=master;protocol=https"
+SRCREV = "845273c3201813d2d14e2d9903fff9899b718c20"
 
 S = "${WORKDIR}/git"
 B = "${S}"
