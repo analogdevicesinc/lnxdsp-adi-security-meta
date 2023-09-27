@@ -1,6 +1,3 @@
-# Based on OP-TEE recipe for dunfell, but that one doesn't work out of the box for 3.16
-# Several options are configurable in local.conf
-
 SUMMARY = "OP-TEE Trusted OS"
 DESCRIPTION = "Open Portable Trusted Execution Environment - Trusted side of the TEE"
 HOMEPAGE = "https://www.op-tee.org/"
@@ -14,16 +11,16 @@ inherit deploy python3native
 
 DEPENDS = "python3-cryptography-native python3-pycryptodome-native python3-pycryptodomex-native python3-pyelftools-native openssl-native"
 
-OPTEE_OS_GIT_URI ?= "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/optee-os.git"
-OPTEE_OS_GIT_PROTOCOL ?= "ssh"
+OPTEE_OS_GIT_URI ?= "git://github.com/analogdevicesinc/optee_os.git"
+OPTEE_OS_GIT_PROTOCOL ?= "https"
 OPTEE_OS_CORE_LOG_LEVEL ?= "1"
 OPTEE_OS_ENABLE_TESTS ?= "n"
 
 SRC_URI = " \
-	${OPTEE_OS_GIT_URI};branch=develop/sc598;protocol=${OPTEE_OS_GIT_PROTOCOL} \
+	${OPTEE_OS_GIT_URI};branch=develop/yocto-3.1.0;protocol=${OPTEE_OS_GIT_PROTOCOL} \
 	file://libotp.a \
 "
-SRCREV = "${AUTOREV}"
+SRCREV = "5565ab2f814941f2870acaf2a2410d819225550b"
 
 S = "${WORKDIR}/git"
 
