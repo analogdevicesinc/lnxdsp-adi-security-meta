@@ -66,9 +66,13 @@ do_install() {
     for f in ${B}/out/arm-plat-${OPTEE_PLATFORM}/export-${OPTEE_TA_TYPE}/* ; do
         cp -aR $f ${D}${includedir}/optee/export-user_ta/
     done
+
+	install -d ${D}${nonarch_base_libdir}/optee_armtz/
+	cp ${B}/out/arm-plat-${OPTEE_PLATFORM}/export-${OPTEE_TA_TYPE}/ta/* ${D}${nonarch_base_libdir}/optee_armtz
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+PACKAGES += "${PN}-ta"
 
 do_deploy() {
     install -d ${DEPLOYDIR}
@@ -78,6 +82,7 @@ do_deploy() {
 addtask deploy after do_install before do_build
 
 FILES:${PN}-dev = "${includedir}/optee/"
+FILES:${PN}-ta = "${nonarch_base_libdir}/optee_armtz/*"
 
 INSANE_SKIP:${PN}-dev = "staticdev"
 
