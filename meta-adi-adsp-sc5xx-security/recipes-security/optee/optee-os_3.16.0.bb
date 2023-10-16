@@ -87,3 +87,4 @@ FILES:${PN}-ta = "${nonarch_base_libdir}/optee_armtz/*"
 INSANE_SKIP:${PN}-dev = "staticdev"
 
 INHIBIT_PACKAGE_STRIP = "1"
+ALLOW_EMPTY:${PN} = "1"
