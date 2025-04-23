@@ -3,7 +3,6 @@ DESCRIPTION = "Open Portable Trusted Execution Environment - Normal World Client
 HOMEPAGE = "https://www.op-tee.org/"
 
 LICENSE = "BSD-2-Clause"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=69663ab153298557a59c67a60a743e5b"
 
 inherit systemd cmake
 
@@ -11,6 +10,9 @@ SRC_URI = " \
     git://github.com/OP-TEE/optee_client.git;branch=master;protocol=https \
     file://tee-supplicant.service \
 "
+inherit pkgconfig
+DEPENDS += "util-linux"
+EXTRA_OEMAKE += "PKG_CONFIG=pkg-config"
 
 S = "${WORKDIR}/git"
 
