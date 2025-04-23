@@ -1,0 +1,248 @@
+diff --git a/plat/adi/adsp_sc598/plat_helpers.S b/plat/adi/adsp_sc598/plat_helpers.S
+index e1b07f458..0df9a6e9d 100644
+--- a/plat/adi/adsp_sc598/plat_helpers.S
++++ b/plat/adi/adsp_sc598/plat_helpers.S
+@@ -11,11 +11,6 @@
+ .globl plat_crash_console_putc
+ .globl plat_crash_console_flush
+ 
+-.globl plat_get_my_entrypoint
+-
+-.globl paltform_mem_init
+-
+-
+ /**
+  * Console is already initialized with crash mode
+  */
+@@ -31,24 +26,3 @@ endfunc plat_crash_console_putc
+ func plat_crash_console_flush
+ 	b console_flush
+ endfunc plat_crash_console_flush
+-
+-
+-/* -------------------------------------------------
+- * uintptr_t plat_get_my_entrypoint(void)
+- * Distinguish cold and warm boot and return warm boot
+- * entry address if available.
+- * Out: x0 - warm boot entry point or 0 on cold boot
+- * -------------------------------------------------
+- */
+-//@todo: support warm boot
+-/* only supports cold boot for now */
+-func plat_get_my_entrypoint
+-	adr x0, #0
+-	ret
+-endfunc plat_get_my_entrypoint
+-
+-
+-/* don't need to do anything before memory access */
+-func platform_mem_init
+-	ret
+-endfunc platform_mem_init
+diff --git a/plat/adi/adsp_sc598/plat_macros.S b/plat/adi/adsp_sc598/plat_macros.S
+index 7b9967df7..72d31dbe9 100644
+--- a/plat/adi/adsp_sc598/plat_macros.S
++++ b/plat/adi/adsp_sc598/plat_macros.S
+@@ -4,14 +4,11 @@
+  * Copyright (c) 2022, Analog Devices, Inc.
+  */
+ 
++.macro plat_print_gic_regs
++.endm
+ 
+-//@todo: remove this comment
+-////empty macros for now
+-//.macro plat_print_gic_regs
+-//.endm
+-//
+-//.macro plat_print_interconnect_regs
+-//.endm
++.macro plat_print_interconnect_regs
++.endm
+ 
+ .macro plat_crash_print_regs
+ .endm
+diff --git a/plat/adi/adsp_sc598/platform_def.h b/plat/adi/adsp_sc598/platform_def.h
+index a7efa9c2b..f7e9e1339 100644
+--- a/plat/adi/adsp_sc598/platform_def.h
++++ b/plat/adi/adsp_sc598/platform_def.h
+@@ -7,73 +7,53 @@
+ #define PLATFORM_DEF_H
+ 
+ #include <arch.h>
+-//#include <common_def.h>
+-//#include <lib/psci/psci.h>
+ 
+ #define PLATFORM_LINKER_FORMAT		"elf64-littleaarch64"
+ #define PLATFORM_LINKER_ARCH		aarch64
+ 
+ #define PLATFORM_STACK_SIZE 0x800
+-#define CACHE_WRITEBACK_GRANULE 64
+-#define FIRMWARE_WELCOME_STR		"TF-A ADSP-SC598 BL31"
+-
+ #define DATA_ALIGN 4
+ 
+-/* PSCI */
+-#define PLATFORM_CORE_COUNT		U(1)
+-#define PLAT_NUM_PWR_DOMAINS		U(2)	/* PDCPU/PDADVSIMD */
++#define PLAT_PRIMARY_CPU	U(0)
++#define PLATFORM_CLUSTER_COUNT U(1)
++#define PLATFORM_CORE_COUNT	U(1)
++#define PLATFORM_CLUSTER0_CORE_COUNT U(1)
++#define PLAT_NUM_PWR_DOMAINS U(2)
+ 
+-#define PLAT_PRIMARY_CPU		U(0)
+-#define PLATFORM_CLUSTER_COUNT		U(1)
+-#define PLATFORM_CLUSTER0_CORE_COUNT	U(1)
+-#define PLAT_MAX_PWR_LVL		MPIDR_AFFLVL2 /* only 1 cluster */
++// @todo review power levels and states
++#define PLAT_MAX_PWR_LVL	U(1)
++#define PLAT_MAX_RET_STATE	U(1)
++#define PLAT_MAX_OFF_STATE	U(2)
+ 
+-#define PLAT_MAX_RET_STATE		(PSCI_LOCAL_STATE_RUN + 1)
+-#define PLAT_MAX_OFF_STATE		(PLAT_MAX_RET_STATE + 1)
++#define PLAT_VIRT_ADDR_SPACE_SIZE	(1ull << 32)
++#define PLAT_PHY_ADDR_SPACE_SIZE	(1ull << 32)
+ 
+-//@todo remove this comment before submission
+-//#define PLAT_MAX_PWR_LVL_STATES	2 - already defined by default.
+-//We don't need anything more than RET/OFF state.
++#define CACHE_WRITEBACK_GRANULE 64
+ 
+-/* BL31 region */
+ #define BL31_BASE			0x9ff00000
+ #define BL31_LIMIT			0xa0000000
+ 
+-/* BL32 region */
+ #define BL32_BASE			0x9ef00000
+ #define BL33_BASE			0x96000000
+ 
+-/* Translation ables */
+ #define MAX_XLAT_TABLES		8
+ #define MAX_MMAP_REGIONS	16
+ 
+-/* Address space */
+-#define PLAT_VIRT_ADDR_SPACE_SIZE	(1ULL << 32) //@todo: remove this comment
+-						     //32 bit address space
+-#define PLAT_PHY_ADDR_SPACE_SIZE	(1ULL << 32)
+-
+-/* GIC v3 */
+ #define ADSP_SC598_GICD_BASE 0x31200000
+ #define ADSP_SC598_GICR_BASE 0x31240000
+ #define ADSP_SC598_GIC_SIZE 0x80000
+ 
+-//@todo: Get approriate name
+-/* Timestamp */
+ #define ADSP_SC598_TIMESTAMP_BASE 0x310ae000
+-
+-/* System Protection Unit */
+ #define ADSP_SC598_SPU0_SECUREC0 0x3108B980
+ #define ADSP_SC598_SPU0_SECUREC1 0x3108B984
+ #define ADSP_SC598_SPU0_SECUREC2 0x3108B988
+ 
+-/* Reset Control */
+ #define ADSP_SC598_RCU_BASE 0x3108c000
+ #define ADSP_SC598_RCU_SIZE 0x1000
+ #define ADI_RCU_REG_CTL			0x00
+ #define ADI_RCU_CTL_SYSRST		BIT(0)
+ #define ADI_RCU_REG_CRCTL		0x08
+ 
+-/* UART */
+ #define ADSP_SC598_UART0_BASE 0x31003000
+ #define ADSP_SC598_UART_SIZE 0x1000
+ 
+diff --git a/plat/adi/adsp_sc598/sc598_bl31.c b/plat/adi/adsp_sc598/sc598_bl31.c
+index ed5b748e5..cf169aaf8 100644
+--- a/plat/adi/adsp_sc598/sc598_bl31.c
++++ b/plat/adi/adsp_sc598/sc598_bl31.c
+@@ -9,7 +9,6 @@
+ 
+ #include <bl31/bl31.h>
+ #include <bl31/ehf.h>
+-#include <common/desc_image_load.h>
+ #include <drivers/arm/gicv3.h>
+ #include <drivers/console.h>
+ #include <drivers/generic_delay_timer.h>
+@@ -27,7 +26,6 @@ unsigned int plat_gic_mpidr_to_core_pos(unsigned long mpidr);
+ 
+ static console_t console;
+ 
+-/* Device specific memory map */
+ static const mmap_region_t sc598_mmap[] = {
+ 	MAP_REGION_FLAT(ADSP_SC598_GICD_BASE, ADSP_SC598_GIC_SIZE,
+ 		MT_DEVICE | MT_RW | MT_SECURE),
+@@ -86,8 +84,6 @@ unsigned int plat_my_core_pos(void) {
+ 	return 0;
+ }
+ 
+-
+-//@todo: maybe check for errors in mpidr value
+ /**
+  * Ignore mpidr, we're always core 0
+  */
+@@ -113,28 +109,22 @@ const unsigned char *plat_get_power_domain_tree_desc(void) {
+ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
+ 	u_register_t arg2, u_register_t arg3)
+ {
+-	/* MMU must be enabled for bootrom to load the image; however it is assumed
+-	 * disabled when this function executes, so we disable it here.
+-	 * */
++	// MMU must be enabled for bootrom to load the image; however it is assumed
++	// disabled upon entry to BL31 so we disable it here rather than in SPL
+ 	write_sctlr_el3(read_sctlr_el3() & ~(SCTLR_M_BIT | SCTLR_C_BIT | SCTLR_I_BIT));
+ 	isb();
+ 	dsb();
+ 
+-	/* SPL also configured the GIC and we need to turn that back off */
++	// SPL also configured the GIC and we need to turn that back off
+ 	gicv3_rdistif_mark_core_asleep(ADSP_SC598_GICR_BASE);
+ 
+ 	console_adi_uart4_register(ADSP_SC598_UART0_BASE, &console);
+ 
+-	//@todo remove debug
+ 	// @todo for falcon boot we will need to receive kernel arguments here
+-	// @todo for falcon, add all kernel args to dts with yocto
+ 	bl33_image_ep_info.pc = BL33_BASE;
+-	bl33_image_ep_info.spsr =
+-		SPSR_64(MODE_EL1, MODE_SP_ELX, DISABLE_ALL_EXCEPTIONS); //save proc state
+-
++	bl33_image_ep_info.spsr = SPSR_64(MODE_EL1, MODE_SP_ELX, DISABLE_ALL_EXCEPTIONS);
+ 	SET_SECURITY_STATE(bl33_image_ep_info.h.attr, NON_SECURE);
+ 
+-	//if optee exists
+ #ifdef SPD_opteed
+ 	SET_PARAM_HEAD(&bl32_image_ep_info, PARAM_EP, VERSION_1, 0);
+ 	SET_SECURITY_STATE(bl32_image_ep_info.h.attr, SECURE);
+@@ -142,19 +132,10 @@ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
+ 	bl32_image_ep_info.spsr = 0;
+ #endif
+ 
+-//	//extract information from bl_params_t if something is provided
+-//	bl31_params_parse_helper(arg0,
+-//			&bl32_image_ep_info, &bl33_image_ep_info);
+-
+ 	// Enable coresight timer
+ 	mmio_write_32(ADSP_SC598_TIMESTAMP_BASE, 1);
+ }
+ 
+-
+-/*
+- * MMU/caches are assumed to be disabled on entry.
+- * Enables MMU.
+- * */
+ void bl31_plat_arch_setup(void) {
+ 	mmap_add_region(BL31_BASE, BL31_BASE, (BL31_LIMIT - BL31_BASE),
+ 		MT_MEMORY | MT_RW | MT_SECURE);
+@@ -165,11 +146,6 @@ void bl31_plat_arch_setup(void) {
+ 	enable_mmu_el3(0);
+ }
+ 
+-/*
+- * Complete platform init
+- * - Initialize the GIC
+- * - Enable generic timer
+- * */
+ void bl31_platform_setup(void) {
+ 	generic_delay_timer_init();
+ 	gicv3_driver_init(&gic_data);
