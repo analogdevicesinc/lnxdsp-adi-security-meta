@@ -5,7 +5,7 @@ COMPATIBLE_MACHINE = "adsp-sc598-som-ezkit"
 
 TFA_GIT_URI ?= "git://github.com/analogdevicesinc/trusted-firmware-a.git"
 TFA_GIT_PROTOCOL ?= "https"
-TFA_GIT_BRANCH ?= "develop/upstream"
+TFA_GIT_BRANCH ?= "tfa-2.13.0"
 
 SRC_URI = "${TFA_GIT_URI};protocol=${TFA_GIT_PROTOCOL};name=tfa;branch=${TFA_GIT_BRANCH}"
 

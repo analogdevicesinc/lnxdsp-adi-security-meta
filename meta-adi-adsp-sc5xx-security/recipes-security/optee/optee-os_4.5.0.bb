@@ -13,7 +13,7 @@ DEPENDS = "python3-cryptography-native python3-pycryptodome-native python3-pycry
 
 OPTEE_OS_GIT_URI ?= "git://github.com/analogdevicesinc/optee_os.git"
 OPTEE_OS_GIT_PROTOCOL ?= "https"
-OPTEE_OS_GIT_BRANCH ?= "optee_4.5.0"
+OPTEE_OS_GIT_BRANCH ?= "optee_4.7.0_adsp_refactor"
 OPTEE_OS_CORE_LOG_LEVEL ?= "1"
 OPTEE_OS_ENABLE_TESTS ?= "n"
 
