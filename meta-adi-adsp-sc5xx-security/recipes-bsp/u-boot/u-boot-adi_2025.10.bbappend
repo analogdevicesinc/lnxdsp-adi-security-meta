@@ -1,7 +1,7 @@
 
 DEPENDS:append:adsp-sc5xx-signedboot = " u-boot-mkimage-native dtc-native"
 
-STAGE_1_TARGET_NAME:adsp-sc5xx-signedboot = "stage1-boot-unsigned.ldr"
+STAGE_1_TARGET_NAME:adsp-sc5xx-signedboot = "u-boot-spl-unsigned.ldr"
 
 # Actual contents of this don't matter, we just need to sign this fit image in order to get uboot
 # to update the dtb with the key that was used for signing, which will be used to sign the kernel
@@ -63,15 +63,16 @@ do_configure:prepend:adsp-sc5xx-signedboot() {
 do_compile:prepend:adsp-sc5xx-signedboot(){
 	sits_emit
 
-	DTS_NAME=$(cat ${S}/configs/${UBOOT_MACHINE} | grep DEVICE_TREE | sed -e 's/.*="//g' -e 's/"//g')
+	DTS_NAME=$(echo "${MACHINE}" | sed 's/^adsp-//')
 
 	INCLUDE=${S}/arch/arm/dts/
 	INCLUDE2=${S}/include
 	INCLUDE3=${S}/arch/arm/include/asm
+	INCLUDE4=${S}/dts/upstream/include
 	SRC=${S}/arch/arm/dts/${DTS_NAME}.dts
 	TMP=${WORKDIR}/${DTS_NAME}.dts.tmp
 
-	cpp -nostdinc -I${INCLUDE} -I${INCLUDE2} -I${INCLUDE3} -undef -x assembler-with-cpp ${SRC} > ${TMP}
+	cpp -nostdinc -I${INCLUDE} -I${INCLUDE2} -I${INCLUDE3} -I${INCLUDE4} -undef -x assembler-with-cpp ${SRC} > ${TMP}
 
 	dtc ${UBOOT_MKIMAGE_DTCOPTS} \
 	-o ${WORKDIR}/${DTS_NAME}.dtb ${TMP}
