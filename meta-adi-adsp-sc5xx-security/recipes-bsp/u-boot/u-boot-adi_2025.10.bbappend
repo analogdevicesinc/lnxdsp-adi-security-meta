@@ -3,6 +3,10 @@ DEPENDS:append:adsp-sc5xx-signedboot = " u-boot-mkimage-native dtc-native"
 
 STAGE_1_TARGET_NAME:adsp-sc5xx-signedboot = "u-boot-spl-unsigned.ldr"
 
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+
+SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('DISTRO_FEATURES', 'signedboot', ' file://0001-sc598-uboot-partitions-update-command.patch', '', d)}"
+
 # Actual contents of this don't matter, we just need to sign this fit image in order to get uboot
 # to update the dtb with the key that was used for signing, which will be used to sign the kernel
 # fit image later
